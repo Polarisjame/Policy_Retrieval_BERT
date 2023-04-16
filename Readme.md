@@ -20,6 +20,8 @@
 
 <a id="readme-top"></a>
 
+> 项目刚部署于服务器上，戳[Link](http://124.223.158.87:8083/)访问。我们租的服务器不怎么好，很容易崩。:crying_cat_face:
+
 <!-- TABLE OF CONTENTS -->
 
 <details>
@@ -74,9 +76,7 @@ The input data consists of the Title, Body, and other attributes of the policy. 
 #### <div id="Triplet">Triplet Loss Training module</div>
 
 From **Community Embedding Module**, We can split all policies into diffrent communities.To help PLM better distinguish policies from different communities,We build triplets from Community Graph and fine-tune the PLM using **tripletloss**
-$$
-L = Max(d(a,p)-d(a,n)+margin,0)
-$$
+$$L = Max(d(a,p)-d(a,n)+margin,0)$$
 where $d$ refers to Euclidean distance,$a,p$ and $n $ represent anchor, positive and negative points respectively.margin is a super parameter.Here we randomly select 10% of all policies from different communities as anchor points, and define points in the same community as anchor points as positive points.Further, We select the **semi-hard triplets**(i.e.,$0<L<margin$,which means the positive point is closer to the anchor but not close enough) as traindataset.
 
 Besides, considering the difference between Policy Title and Policy BERT, we treat title as a special kinds of keywords, Therefore, **We split our Retrieval System into another two Channels** : Title2Body and Body2Body.In Title2Body channel, we select the concatenate of policy title and other attributes as anchor points, Body as positive and negative points.In Body2Body channel, we select  policy body as anchor, positive and negative points. 
