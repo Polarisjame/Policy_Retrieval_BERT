@@ -89,7 +89,7 @@ In sum up, we obtain a 3 channel result : ES , Title2Body, Body2Body. The inters
 
 ### <div id="Recommend">Recommend System</div>
 
-The traditional method in recommend fields is using collaborative filtering model, which ignore the origin feature of User and Item.Inspired by [GCMC](https://www.kdd.org/kdd2018/files/deep-learning-day/DLDay18_paper_32.pdf) and [LSR]([Reasoning with Latent Structure Refinement for Document-Level Relation Extraction - ACL Anthology](https://aclanthology.org/2020.acl-main.141/)) ,we treat the recommend task as link prediction,using graph convolutional model to gather the featuer between user and items and further treat the structure of the graph as a learnable latent parameter.
+The traditional method in recommend fields is using collaborative filtering model, which ignore the origin feature of User and Item.Inspired by [GCMC](https://www.kdd.org/kdd2018/files/deep-learning-day/DLDay18_paper_32.pdf) and [LSR](https://aclanthology.org/2020.acl-main.141/) ,we treat the recommend task as link prediction,using graph convolutional model to gather the featuer between user and items and further treat the structure of the graph as a learnable latent parameter.
 
 ![image-20230415162128000](Readme/image-20230415162128000.png)
 
