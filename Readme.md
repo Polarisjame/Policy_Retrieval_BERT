@@ -118,7 +118,7 @@ My code works with the following environment.
 
    ```
    cd ./init_data_process
-   pthon preprocess2DBLP.py
+   python preprocess2DBLP.py
    ```
 
 2. the result used to build community is stored under ./init_data_process/results
