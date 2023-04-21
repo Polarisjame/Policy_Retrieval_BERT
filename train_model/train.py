@@ -104,43 +104,43 @@ def train(opt):
         if opt.lr_cosine_warm:
             scheduler.step()
         # evaluate
-        # with torch.no_grad():
-        #     model.eval()
-        #     total_loss = 0
-        #     logging('-' * 89)
-        #     logging('evaluating')
-        #     for query, positive, negative in title_dataloader:
-        #         query = get_bert_cuda(query)
-        #         positive = get_bert_cuda(positive)
-        #         negative = get_bert_cuda(negative)
-        #         query_emb = model(query)
-        #         positive_emb = model(positive)
-        #         negative_emb = model(negative)
-        #         # loss = triplet_margin_loss(query_emb, positive_emb, negative_emb, margin=opt.margin, reduction='mean')
-        #         loss = lossF(query_emb, positive_emb, negative_emb)
-        #         total_loss += loss.item()
-        #     total_loss /= len(title_dataloader)
-        #     logging(f"Epoch:{epoch}, Average Evaluate Loss:{total_loss}")
-        #     logging('-' * 89)
-        #     if total_loss < history_best_loss:
-        #         history_best_loss = total_loss
-        #         path = os.path.join(checkpoint_dir, opt.model_name + '_best.pt')
-        #         torch.save({
-        #             'epoch': epoch,
-        #             'checkpoint': model.state_dict(),
-        #             'lr': lr,
-        #             'best_loss': total_loss,
-        #             'best_epoch': epoch
-        #         }, path)
-        #     if epoch % opt.save_round == 0:
-        #         path = os.path.join(checkpoint_dir, opt.model_name + f'_epoch{epoch}.pt')
-        #         torch.save({
-        #             'epoch': epoch,
-        #             'checkpoint': model.state_dict(),
-        #             'lr': lr,
-        #             'loss': total_loss,
-        #             'best_loss': history_best_loss,
-        #         }, path)
+        with torch.no_grad():
+            model.eval()
+            total_loss = 0
+            logging('-' * 89)
+            logging('evaluating')
+            for query, positive, negative in title_dataloader:
+                query = get_bert_cuda(query)
+                positive = get_bert_cuda(positive)
+                negative = get_bert_cuda(negative)
+                query_emb = model(query)
+                positive_emb = model(positive)
+                negative_emb = model(negative)
+                # loss = triplet_margin_loss(query_emb, positive_emb, negative_emb, margin=opt.margin, reduction='mean')
+                loss = lossF(query_emb, positive_emb, negative_emb)
+                total_loss += loss.item()
+            total_loss /= len(title_dataloader)
+            logging(f"Epoch:{epoch}, Average Evaluate Loss:{total_loss}")
+            logging('-' * 89)
+            if total_loss < history_best_loss:
+                history_best_loss = total_loss
+                path = os.path.join(checkpoint_dir, opt.model_name + '_best.pt')
+                torch.save({
+                    'epoch': epoch,
+                    'checkpoint': model.state_dict(),
+                    'lr': lr,
+                    'best_loss': total_loss,
+                    'best_epoch': epoch
+                }, path)
+            if epoch % opt.save_round == 0:
+                path = os.path.join(checkpoint_dir, opt.model_name + f'_epoch{epoch}.pt')
+                torch.save({
+                    'epoch': epoch,
+                    'checkpoint': model.state_dict(),
+                    'lr': lr,
+                    'loss': total_loss,
+                    'best_loss': history_best_loss,
+                }, path)
         plt.plot([step for step in range(t)], train_loss_list)
         plt.savefig(r"./logs/loss_fig.png")
         dataframe = pd.DataFrame({'loss_item': train_loss_list})

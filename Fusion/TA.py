@@ -26,15 +26,16 @@ def Multi_Channel_Fusion(df_channels: list):
 
 def Fusion(title_id, title_dis, body_id, body_dis, es_id, es_dis):
     # pd.set_option('display.max_rows', None)
-    # file_root_body = r'./data/searchBody.txt'
-    # body_dfs = read_file(file_root_body)
-    # file_root_title = r'./data/searchTitle.txt'
-    # title_dfs = read_file(file_root_title)
-    # file_root_es = r'./data/es_result.txt'
-    # es_dfs = read_file(file_root_es)
-    # df_channels = [es_dfs, title_dfs, body_dfs]
-    id = 0
-    df_channels = load_data_java(id, title_id, title_dis, body_id, body_dis, es_id, es_dis)
+    file_root_body = r'./data/searchBody.txt'
+    body_dfs = read_file(file_root_body)
+    file_root_title = r'./data/searchTitle.txt'
+    title_dfs = read_file(file_root_title)
+    file_root_es = r'./data/es_result.txt'
+    es_dfs = read_file(file_root_es)
+    df_channels = [es_dfs, title_dfs, body_dfs]
     res_df = Multi_Channel_Fusion(df_channels)
-    # evaluate(res_df)
-    return list(res_df[id]['policy'])
+    evaluate(res_df)
+    # id = 0
+    # df_channels = load_data_java(id, title_id, title_dis, body_id, body_dis, es_id, es_dis)
+    # res_df = Multi_Channel_Fusion(df_channels)
+    # return list(res_df[id]['policy'])

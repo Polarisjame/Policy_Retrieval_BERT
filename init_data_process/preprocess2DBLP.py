@@ -14,7 +14,7 @@ data_ori = pd.read_csv(r"./data/policyinfo_new.tsv", encoding='gb18030', sep='\t
 del_title = ['PUB_AGENCY_ID', 'PUB_NUMBER', 'CITY', 'PUB_AGENCY']
 data_drop_t = data_ori.drop(del_title, axis=1, inplace=False)
 data_drop_t['POLICY_BODY'] = data_drop_t.apply(fill_body, axis=1)
-# print(data_drop_t.isnull().sum())
+print(data_drop_t.isnull().sum())
 
 # index = list(range(data_drop_t.shape[0]))
 # data_drop_t['index'] = index
