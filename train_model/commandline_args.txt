@@ -1,0 +1,23 @@
+{
+    "checkpoint_dir": "./checkpoint/",
+    "loader_save_file": "./data/prepro_data/",
+    "pretrain_model": "",
+    "model_name": "BERT_DoubleMLP",
+    "full_dataloader_save_file": "",
+    "full_data_save_file": "./Conver2vec/results/",
+    "model_output_dim": 128,
+    "use_bert_finetune": true,
+    "dropout": 0.2,
+    "batch_size": 16,
+    "epochs": 50,
+    "margin": 0.3,
+    "lr": 0.003,
+    "weight_decay": 0.0001,
+    "lr_cosine_warm": true,
+    "force_lr": false,
+    "save_round": 3,
+    "log_step": 20,
+    "reload": false,
+    "tokenize_model_name": "clue/roberta_chinese_base",
+    "encode_model_name": "clue/roberta_chinese_base"
+}

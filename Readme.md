@@ -64,33 +64,34 @@ This system consists of two parts
 
 ### <div id="Retrieval">Retrieval System</div>
 
-As shown in Figure,The Retirval System is divided into two Channels: KeyWords Retieval and Semantic Retrieval.We use ElasticSearch [ES]([www.elastic.co](https://www.elastic.co/elasticsearch/)) for KeyWords Search. Our Semantic Retrieval Channel mainly consists of 4 modules: Encoding module, Community Embedding module, High-dimensional vector retrieval module, Triplet Loss Training mudule. Then we use Xgboost to fusion the results from different Channels.
+&ensp;As shown in Figure,The Retirval System is divided into two Channels: KeyWords Retieval and Semantic Retrieval.We use ElasticSearch [**ES**]([www.elastic.co](https://www.elastic.co/elasticsearch/)) for KeyWords Search. Our Semantic Retrieval Channel mainly consists of 4 modules: **Encoding Module**, **Community Embedding Module**, **High-Dimensional Vector Retrieval Module**, **Triplet Loss Training Module**. Then we use Xgboost to fusion the results from different Channels.
 
 <img src="Readme/image-20230415152458437.png" alt="image-20230415152458437" style="zoom: 67%;" />
 
 #### <div id="Encoding">Encoding Module</div>
 
-The input data consists of the Title, Body, and other attributes of the policy. We use **PLM model**(e.g.,BERT/RoBERTa) to extract Semantic informations in policy's title and body.And we use **onehot embedding** to embed other attributes of a ploicy.
+&ensp;The input data consists of Title, Body, and other attributes of the policy. We use **PLM Model**(e.g., BERT/RoBERTa) to extract Semantic informations in policy's title and body.And we use **Onehot Embedding** to embed other attributes of a ploicy.
 
 **Community Embedding module** and **High-dimensional vector retrieval module** is Implemented by my teammates
 
 #### <div id="Triplet">Triplet Loss Training module</div>
 
-From **Community Embedding Module**, We can split all policies into diffrent communities.To help PLM better distinguish policies from different communities,We build triplets from Community Graph and fine-tune the PLM using **tripletloss**
+&ensp;From **Community Embedding Module**, We can split all policies into diffrent communities. To help Language Model better distinguish policies from different communities, we build triplets like $ (anchor, positive, negative) $ from Community Graph and fine-tune PLM by **TripletLoss**
 $$L = Max(d(a,p)-d(a,n)+margin,0)$$
-where $d$ refers to Euclidean distance,$a,p$ and $n $ represent anchor, positive and negative points respectively.margin is a super parameter.Here we randomly select 10% of all policies from different communities as anchor points, and define points in the same community as anchor points as positive points.Further, We select the **semi-hard triplets**(i.e.,$0<L<margin$,which means the positive point is closer to the anchor but not close enough) as traindataset.
+where $d$ refers to Euclidean Distance, $a,p$ and $ n $ represents anchor, positive and negative points respectively. **margin** is a hyper-parameter.Here we randomly select 10% of all policies from different communities as anchor points, and define points in the same community as anchor points as positive points.Further, We select the **semi-hard triplets**(i.e.,$ 0<L<margin $,which means the positive point is closer to the anchor but not close enough) as Trainset.
 
-Besides, considering the difference between Policy Title and Policy BERT, we treat title as a special kinds of keywords, Therefore, **We split our Retrieval System into another two Channels** : Title2Body and Body2Body.In Title2Body channel, we select the concatenate of policy title and other attributes as anchor points, Body as positive and negative points.In Body2Body channel, we select  policy body as anchor, positive and negative points. 
+&ensp;Besides, considering the difference between Policy Title and Policy BERT, we treat title as a special kinds of keywords, Therefore, **We split our Retrieval System into another two Channels** : Title2Body and Body2Body.In Title2Body channel, we select the concatenate of policy title and other attributes as anchor points, Body as positive and negative points.In Body2Body channel, we select  policy body as anchor, positive and negative points. 
 
-Then,two Retrieval Channels provide two models, We send the origin policy data into two models parallelly, and the output of each model is sent into **High-dimensional vector retrieval module** and get the output of semantic retrival.
+&ensp;Then,two Retrieval Channels provide two models, We send the origin policy data into two models parallelly, and the output of each model is sent into **High-dimensional vector retrieval module** and get the output of semantic retrival.
 
 #### <div id="Fusion">Fusion Layer</div>
 
-In sum up, we obtain a 3 channel result : ES , Title2Body, Body2Body. The intersection of these results is most appropriate, but it's also time-consuming.Thus, We use Xgboost model to help the model learn the rank of intersection.In detail, we calculate the average similarity in intersection, and let other policy's similarity that not included in ther intersection as 0.Then, we apply xgboost to fit the Mean Similarity.
+&ensp;In sum up, we obtain a 3 channel result : ES , Title2Body, Body2Body. The intersection of these results is most appropriate, but it's also time-consuming.Thus, We use Xgboost model(or other algorithms like TA) to help the model learn the rank of intersection.In detail, we calculate the average similarity in intersection, and let other policy's similarity that not included in ther intersection as 0.Then, we apply xgboost to fit the Mean Similarity.
 
 ### <div id="Recommend">Recommend System</div>
 
-The traditional method in recommend fields is using collaborative filtering model, which ignore the origin feature of User and Item.Inspired by [GCMC](https://www.kdd.org/kdd2018/files/deep-learning-day/DLDay18_paper_32.pdf) and [LSR](https://aclanthology.org/2020.acl-main.141/) ,we treat the recommend task as link prediction,using graph convolutional model to gather the featuer between user and items and further treat the structure of the graph as a learnable latent parameter.
+&ensp;The traditional method in recommend fields is using collaborative filtering model, which ignore the origin feature of User and Item.Inspired by [GCMC](https://www.kdd.org/kdd2018/files/deep-learning-day/DLDay18_paper_32.pdf) and [LSR](https://aclanthology.org/2020.acl-main.141/) ,we treat the recommend task as link prediction,using graph convolutional model to gather the featuer between user and items and further treat the structure of the graph as a learnable latent parameter.
+
 
 ![image-20230415162128000](Readme/image-20230415162128000.png)
 
@@ -105,9 +106,13 @@ The traditional method in recommend fields is using collaborative filtering mode
 My code works with the following environment.
 
 * `python=3.7`
-* `pytorch=1.6.0+cu102`
-* `dgl-cu102(0.4.3)`
-* ubuntu20.04
+* `pytorch=1.13.1+cu116`
+* `transformers=4.18.0`
+* `ubuntu 20.04`
+
+```python
+pip install requirements.txt  //Install Requirements
+```
 
 ### Dataset
 
@@ -115,24 +120,26 @@ My code works with the following environment.
 
 ### <div id="Preprocess">Preprocess</div>
 
-1. put the downloaded data under ./init_data_process/data
+1. put the downloaded data under *./init_data_process/data*
 
    ```
    cd ./init_data_process
    python preprocess2DBLP.py
    ```
 
-2. the result used to build community is stored under ./init_data_process/results
+2. the result used to build community is stored under   
+   *./init_data_process/results*
 
-3. Produce Random Anchor
+4. Produce Random Anchor
 
    ```
    python Random_sample.py
    ```
 
-4. Random sample result is stored under ./init_data_process/results/random_sample
+5. Random sample result is stored under 
+  *./init_data_process/results/random_sample*
 
-5. Produce triplets
+6. Produce triplets
 
    ```
    python read_sample.py
@@ -140,8 +147,9 @@ My code works with the following environment.
 
 ### <div id="triplettrain">Triplets Training</div>
 
-1. put `triplets_body.csv/data_sample.csv/category_index.txt` produced in Preprocess under ./train_model/data
-2. put origin policy data `policyinfo_new.tsv` under ./train_model/Conver2vec/data
+1. put `triplets_body.csv/data_sample.csv/category_index.txt` produced in Preprocess under *./train_model/data*
+2. put origin policy data `policyinfo_new.tsv` under 
+  *./train_model/Conver2vec/data*
 
 ```
 cd ../
